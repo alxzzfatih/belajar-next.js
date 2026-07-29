@@ -1,3 +1,6 @@
+"use client";
+
+import { useState } from "react";
 import Link from "next/link";
 
 interface KartuBeritaProps {
@@ -15,6 +18,19 @@ export default function KartuBerita({
   kategori,
   link = "#",
 }: KartuBeritaProps) {
+  const [likes, setLikes] = useState(0);
+  const [isLiked, setIsLiked] = useState(false);
+
+  function tanganiKlikLike() {
+    if (!isLiked) {
+      setLikes((prev) => prev + 1);
+      setIsLiked(true);
+    } else {
+      setLikes((prev) => prev - 1);
+      setIsLiked(false);
+    }
+  }
+
   return (
     <article className="group flex flex-col justify-between overflow-hidden rounded-2xl border border-border-color bg-card-bg transition-all duration-300 hover:-translate-y-1 hover:shadow-[6px_6px_0px_0px_rgba(28,45,34,1)]">
       <div className="p-6 flex-1 flex flex-col">
@@ -25,8 +41,16 @@ export default function KartuBerita({
               {kategori}
             </span>
           )}
+
           {tanggal && <span className="opacity-60">{tanggal}</span>}
         </div>
+
+        {/* Label Proyek Terpopuler */}
+        {likes >= 5 && (
+          <p className="mb-2 text-sm font-bold text-red-500">
+            🔥 Proyek Terpopuler!
+          </p>
+        )}
 
         {/* Judul */}
         <h3 className="text-xl md:text-2xl font-serif font-bold leading-snug mb-3 group-hover:text-accent-orange transition-colors">
@@ -38,6 +62,24 @@ export default function KartuBerita({
           {deskripsi}
         </p>
 
+        {/* Like Section */}
+        <div className="flex items-center justify-between mb-6">
+          <span className="text-sm font-semibold">
+            ❤️ {likes} Like
+          </span>
+
+          <button
+            onClick={tanganiKlikLike}
+            className={`px-4 py-2 rounded-lg text-sm font-semibold transition-all duration-300 ${
+              isLiked
+                ? "bg-red-500 text-white hover:bg-red-600"
+                : "bg-accent-orange text-white hover:opacity-90"
+            }`}
+          >
+            {isLiked ? "Batal Suka" : "Suka"}
+          </button>
+        </div>
+
         {/* Link Selengkapnya */}
         <div className="mt-auto pt-4 border-t border-border-color/10">
           <Link
@@ -45,6 +87,7 @@ export default function KartuBerita({
             className="inline-flex items-center gap-1.5 text-xs font-bold uppercase tracking-wider text-accent-orange"
           >
             Lihat Detail
+
             <svg
               className="w-4 h-4 transition-transform group-hover:translate-x-1"
               fill="none"
